@@ -1,0 +1,72 @@
+#!/bin/bash
+
+read -p "Chat Client Authorization Server Setup, only run this if you want to reset your database.  Continue [y/n]:" proceed
+
+if [ "$proceed" == "y" ] || [ "$proceed" == "Y" ]; then
+
+	read -p "Enter postgres username [postgres]: " username
+	username=${username:-postgres}
+	
+	read -p "Enter postgres user password [postgres]: " -s password
+	password=${password:-postgres}
+
+	echo
+	export PGPASSWORD=$password
+
+	source ./env
+
+	function setupDatabase {
+
+	  psql -U $username -h dockerhost -p $DOCKER_POSTGRES_PORT -tAc "SELECT 1 FROM pg_database WHERE datname='$DATABASE_NAME'"
+	  if [[ $? -ne 0 ]]
+	  then
+		  echo "setupDatabase exit with error"
+		  sleep 5s
+	      return -1
+	  fi
+
+	  psql -U $username -h dockerhost -p $DOCKER_POSTGRES_PORT -c "drop database if exists \"$DATABASE_NAME\";"
+	  psql -U $username -h dockerhost -p $DOCKER_POSTGRES_PORT -c "create database \"$DATABASE_NAME\";"
+	}
+
+	echo "*************************************************************************"
+	echo "Create Docker container $DOCKER_CONTAINER                                "
+	echo "*************************************************************************"
+	echo
+
+	sleep 2s
+
+	echo "docker run --name "$DOCKER_CONTAINER" -p $DOCKER_POSTGRES_PORT:5432 -e POSTGRES_PASSWORD=$password -d postgres:9.6.3"
+	docker run --name $DOCKER_CONTAINER -p $DOCKER_POSTGRES_PORT:5432 -e POSTGRES_PASSWORD=$password -d postgres:9.6.3
+
+	echo
+	echo "*************************************************************************"
+	echo "Create Docker container $DOCKER_CONTAINER done                            "
+	echo "*************************************************************************"
+
+	echo
+	echo "*************************************************************************"
+	echo "Stopping Docker container $DOCKER_CONTAINER                               "
+	echo "*************************************************************************"
+
+	docker stop $DOCKER_CONTAINER
+
+	echo "*************************************************************************"
+	echo "Create database on docker container $DOCKER_CONTAINER                    "
+	echo "*************************************************************************"
+
+	docker start $DOCKER_CONTAINER
+	export PGPASSWORD=$password
+	setupDatabase
+
+	while [ $? -ne 0 ]
+	do
+	  setupDatabase
+	done
+
+	./mvnw clean package
+
+	echo "Setup complete!"
+
+fi
+

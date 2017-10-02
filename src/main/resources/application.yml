@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: default
+
+server:
+  port: ${port:8080}
+
+---
+
+spring:
+  profiles: default
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+
+logging:
+  file: ionic-chat-client-authorization.log
+  level:
+    com:
+      sevensummits:
+        choa: DEBUG
