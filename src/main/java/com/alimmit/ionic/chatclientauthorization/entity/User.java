@@ -1,15 +1,19 @@
 package com.alimmit.ionic.chatclientauthorization.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable, Principal {
+public class User implements Serializable, Principal, UserDetails {
 
     public static User create(final String username, final String password) {
         final User user = new User();
@@ -39,6 +43,26 @@ public class User implements Serializable, Principal {
         this.remoteAddress = authenticationDetails.getRemoteAddress();
         this.sessionId = authenticationDetails.getSessionId();
         return this;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
     @Override

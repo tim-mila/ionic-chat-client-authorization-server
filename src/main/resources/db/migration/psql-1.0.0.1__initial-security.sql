@@ -23,10 +23,9 @@ CREATE TABLE "authorities" (
 CREATE INDEX idx_authorities_username on "authorities" ("username");
 
 CREATE TABLE "oauth_client_details" (
-    "id" bigint NOT NULL,
-    "name" character varying(255) not null,
-    "client_id" character varying(255) not null,
-    "client_secret" character varying(255) not null,
+    "name" character varying(255),
+    "client_id" character varying(255),
+    "client_secret" character varying(255),
     "resource_ids" character varying(255),
     "scope" character varying(255),
     "authorized_grant_types" character varying(255),
@@ -36,7 +35,6 @@ CREATE TABLE "oauth_client_details" (
     "refresh_token_validity" character varying(255),
     "additional_information" character varying(4096),
     "autoapprove" character varying(255),
-    constraint "oauthclientdetails_pkey" primary key("id"),
     constraint "uidx_oauthclientdetails_name" unique("name"),
     constraint "uidx_oauthclientdetails_client_id" unique("client_id"),
     constraint "uidx_oauthclientdetails_client_secret" unique("client_secret")

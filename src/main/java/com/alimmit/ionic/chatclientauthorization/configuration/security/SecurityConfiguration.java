@@ -1,5 +1,6 @@
 package com.alimmit.ionic.chatclientauthorization.configuration.security;
 
+import com.alimmit.ionic.chatclientauthorization.controller.v1.Path;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         LOG.info("** Configure Auth                           **");
         LOG.info("==============================================");
         auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
+
+
     }
 
     @Override
@@ -42,10 +45,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         LOG.info("******************************************************");
 
         http.authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/api" + Path.USER_SIGNUP, "/api" + Path.USER_LOGIN, "/oauth/**4").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().permitAll();
+                .and().csrf().disable();
 
 
 //        http
