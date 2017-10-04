@@ -34,8 +34,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         LOG.info("** Configure Auth                           **");
         LOG.info("==============================================");
         auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
-
-
     }
 
     @Override
@@ -45,23 +43,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         LOG.info("******************************************************");
 
         http.authorizeRequests()
-                .antMatchers("/api" + Path.USER_SIGNUP, "/api" + Path.USER_LOGIN, "/oauth/**").permitAll()
+                .antMatchers(Path.USER_SIGNUP, Path.USER_LOGIN, "/oauth/**").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
-
-
-//        http
-//                .antMatcher("/**")
-//                .authorizeRequests().antMatchers("/login**").permitAll()
-//                .anyRequest().authenticated()//.and().httpBasic()
-//                .and().csrf().csrfTokenRepository(csrfTokenRepository()).ignoringAntMatchers("/shutdown")
-//                //.and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-//                .and().logout().logoutSuccessUrl("/").permitAll();
     }
 
-    private CsrfTokenRepository csrfTokenRepository() {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
-        return repository;
-    }
+//    private CsrfTokenRepository csrfTokenRepository() {
+//        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+//        repository.setHeaderName("X-XSRF-TOKEN");
+//        return repository;
+//    }
 }
