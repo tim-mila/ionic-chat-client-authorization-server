@@ -12,7 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
 
@@ -42,28 +43,33 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         clients.jdbc(dataSource);
 
         final ClientDetails details = clientDetailsService.loadClientByClientId("clientIdPassword");
-
         if (details == null) {
             clients.jdbc(dataSource)
                     .withClient("clientIdPassword")
                     .secret("secret")
-                    .authorizedGrantTypes("password", "authorization_code", "refresh_token")
+                    .authorizedGrantTypes("password", "refresh_token")
                     .scopes("read");
         }
     }
 
     @Override
-    public void configure(
-            AuthorizationServerEndpointsConfigurer endpoints)
-            throws Exception {
-
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
-                .tokenStore(tokenStore())
-                .authenticationManager(authenticationManager);
+                .pathMapping("/oauth/token", "/api/v1/user/login")
+                .accessTokenConverter(accessTokenConverter())
+                .authenticationManager(authenticationManager)
+                .tokenStore(tokenStore());
     }
 
     @Bean
     public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource);
+        return new JwtTokenStore(accessTokenConverter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("abc123");
+        return converter;
     }
 }
