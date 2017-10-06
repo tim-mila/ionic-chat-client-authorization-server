@@ -1,5 +1,7 @@
 package com.alimmit.ionic.chatclientauthorization.configuration.security;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,8 @@ import javax.sql.DataSource;
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
+    private static final Log LOG = LogFactory.getLog(AuthorizationServerConfiguration.class);
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -41,25 +45,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
-        clients.jdbc(dataSource);
+        LOG.info("AuthorizationServerConfiguration::configure");
 
-        try {
-            final ClientDetails details = clientDetailsService.loadClientByClientId("clientIdPassword");
-            if (details == null) {
-                clients.jdbc(dataSource)
-                        .withClient("clientIdPassword")
-                        .secret("secret")
-                        .authorizedGrantTypes("password", "refresh_token")
-                        .scopes("read");
-            }
-        }
-        catch (NoSuchClientException e) {
-            clients.jdbc(dataSource)
-                    .withClient("clientIdPassword")
-                    .secret("secret")
-                    .authorizedGrantTypes("password", "refresh_token")
-                    .scopes("read");
-        }
+        clients.jdbc(dataSource)
+            .withClient("clientIdPassword")
+            .secret("secret")
+            .authorizedGrantTypes("password", "refresh_token")
+            .scopes("read");
     }
 
     @Override

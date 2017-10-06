@@ -51,6 +51,7 @@ public class UserController {
         HttpMessageConverter formHttpMessageConverter = new FormHttpMessageConverter();
         HttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         HttpMessageConverter jacksonHttpMessageConverter = new MappingJackson2HttpMessageConverter();
+
         template.setMessageConverters(Lists.newArrayList(formHttpMessageConverter, stringHttpMessageConverter, jacksonHttpMessageConverter));
 
         final String authorizationHeader = "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64String("clientIdPassword:secret".getBytes());

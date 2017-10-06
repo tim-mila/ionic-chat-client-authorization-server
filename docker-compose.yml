@@ -1,0 +1,34 @@
+version: "2"
+
+services:
+
+  ionic-chat-client-authorization:
+    image: timmila/chat-client-authorization:latest
+    ports:
+      - 8080:8080
+    environment:
+      - JDBC_DATABASE_URL=jdbc:postgresql://ionic-chat-client-authorization-postgres:5432/ionic-chat-client-authorization?currentSchema=chat
+      - JDBC_DATABASE_USERNAME=ionic_user
+      - JDBC_DATABASE_PASSWORD=abc123
+    networks:
+      - ionic-chat-client-authorization-db
+
+  ionic-chat-client-authorization-postgres:
+    image: postgres:9.6
+    ports:
+      - 5432:5432
+    volumes:
+      - ".src/docker/postgres:/docker-entrypoint-initdb.d/"
+      - ionic-chat-client-authorization-pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=ionic_user
+      - POSTGRES_PASSWORD=abc123
+    networks:
+      - ionic-chat-client-authorization-db
+
+volumes:
+  ionic-chat-client-authorization-pgdata:
+  ionic-chat-client-authorization-logging:
+
+networks:
+  ionic-chat-client-authorization-db:
