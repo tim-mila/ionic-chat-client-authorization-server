@@ -30,7 +30,7 @@ public class TestJpaConfig {
 
     private static final String HBM2DDL = "create-drop";
     private static final String DIALECT = "org.hibernate.dialect.H2Dialect";
-    private static final String SCHEMA = "chat";
+//    private static final String SCHEMA = "chat";
 
     @Bean
     public DataSource dataSource() {
@@ -46,7 +46,8 @@ public class TestJpaConfig {
         flyway.setDataSource(dataSource);
         flyway.setSqlMigrationPrefix("h2-");
         flyway.setSqlMigrationSeparator("__");
-        flyway.setSchemas(SCHEMA);
+//        flyway.setSchemas(SCHEMA);
+        flyway.setBaselineOnMigrate(true);
         return flyway;
     }
 
@@ -80,7 +81,7 @@ public class TestJpaConfig {
         final Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", HBM2DDL);
         properties.setProperty("hibernate.dialect", DIALECT);
-        properties.setProperty("hibernate.default_schema", SCHEMA);
+//        properties.setProperty("hibernate.default_schema", SCHEMA);
         return properties;
     }
 }

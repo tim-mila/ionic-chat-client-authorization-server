@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -42,8 +43,17 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
         clients.jdbc(dataSource);
 
-        final ClientDetails details = clientDetailsService.loadClientByClientId("clientIdPassword");
-        if (details == null) {
+        try {
+            final ClientDetails details = clientDetailsService.loadClientByClientId("clientIdPassword");
+            if (details == null) {
+                clients.jdbc(dataSource)
+                        .withClient("clientIdPassword")
+                        .secret("secret")
+                        .authorizedGrantTypes("password", "refresh_token")
+                        .scopes("read");
+            }
+        }
+        catch (NoSuchClientException e) {
             clients.jdbc(dataSource)
                     .withClient("clientIdPassword")
                     .secret("secret")
