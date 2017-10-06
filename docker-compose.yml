@@ -12,6 +12,10 @@ services:
       - JDBC_DATABASE_PASSWORD=abc123
     networks:
       - ionic-chat-client-authorization-db
+    extra_hosts:
+      - dockerhost:127.0.0.1
+    depends_on:
+      - ionic-chat-client-authorization-postgres
 
   ionic-chat-client-authorization-postgres:
     image: postgres:9.6

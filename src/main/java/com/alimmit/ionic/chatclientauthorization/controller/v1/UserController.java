@@ -47,6 +47,7 @@ public class UserController {
 
         userService.findOrCreate(user);
 
+        // TODO Move out of here
         final RestTemplate template = new RestTemplate();
         HttpMessageConverter formHttpMessageConverter = new FormHttpMessageConverter();
         HttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
@@ -64,10 +65,15 @@ public class UserController {
         body.add("username", user.getUsername());
         body.add("password", user.getPassword());
 
+        LOG.debug(httpServletRequest.getScheme());
+        LOG.debug(httpServletRequest.getServerName());
+        LOG.debug(httpServletRequest.getServerPort());
+
         final String url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" + httpServletRequest.getServerPort() + "/api/v1/user/login";
         LOG.debug(url);
 
         final HttpEntity entity = new HttpEntity(body, headers);
         return template.exchange(url, HttpMethod.POST, entity, OAuth2AccessToken.class);
+        // TODO Move out of here
     }
 }
