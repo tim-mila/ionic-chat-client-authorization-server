@@ -1,11 +1,20 @@
 language: java
 jdk: oraclejdk8
 install: true
-script: cp .travis-settings.xml $HOME/.m2/settings.xml && ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script: ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 cache:
   directories:
     - $HOME/.m2
+
+after_success:
+  - docker login -e $DOCKER_USERNAME -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  - export REPO=timmila/ionic-chat-client-authorization
+  - export TAG=latest
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  - docker push $REPO
 
 services:
   - docker
