@@ -132,7 +132,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<repository>docker.io</repository>
+					<repository>docker.io/${docker.image.prefix}/${project.artifactId}</repository>
 					<tag>latest</tag>
 					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
 				</configuration>
