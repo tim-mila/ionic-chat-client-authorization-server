@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.security.Principal;
-
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -48,21 +46,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Principal findOrCreate(final Principal principal) {
+    public User findOrCreate(final User user) {
 
-        if (null != findByUsername(principal.getName())) {
+        if (null != findByUsername(user.getName())) {
             throw new HttpServerErrorException(HttpStatus.CONFLICT);
         }
 
-        if (User.class.isAssignableFrom(principal.getClass())) {
-            final User user = (User) principal;
-            userRepository.save(User.create(principal.getName(), passwordEncoder.encode(user.getPassword())));
-            userAuthorityRepository.save(UserAuthority.createUser(((User) principal).getUsername(), UserAuthority.ROLE_ADMIN));
-            return user;
-        }
-
-
-        return principal;
+        userRepository.save(User.create(user.getName(), passwordEncoder.encode(user.getPassword())));
+        userAuthorityRepository.save(UserAuthority.createUser(user.getUsername(), UserAuthority.ROLE_ADMIN));
+        return user;
     }
 
     @Override
