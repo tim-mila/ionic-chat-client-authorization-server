@@ -1,7 +1,7 @@
 language: java
 jdk: oraclejdk8
 install: true
-script: cp .travis-settings.xml $HOME/.m2/settings.xml && ./mvnw deploy -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script: cp .travis-settings.xml $HOME/.m2/settings.xml && ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 cache:
   directories:
