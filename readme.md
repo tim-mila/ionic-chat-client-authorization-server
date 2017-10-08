@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/tim-mila/ionic-chat-client-authorization-server.svg?branch=master)](https://travis-ci.org/tim-mila/ionic-chat-client-authorization-server)
