@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -30,7 +31,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
     private HttpServletRequest httpServletRequest;
 
     @Override
-    public OAuth2AccessToken login(final User user) {
+    public ResponseEntity<OAuth2AccessToken> login(final User user) {
 
         final RestTemplate template = restTemplate();
 
@@ -48,7 +49,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         LOG.debug(url);
 
         final HttpEntity entity = new HttpEntity<>(body, headers);
-        return template.exchange(url, HttpMethod.POST, entity, OAuth2AccessToken.class).getBody();
+        return template.exchange(url, HttpMethod.POST, entity, OAuth2AccessToken.class);
     }
 
     private RestTemplate restTemplate() {

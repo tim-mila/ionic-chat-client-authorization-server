@@ -1,0 +1,48 @@
+ionic-chat-auth-app:
+  autoredeploy: true
+  environment:
+    - JDBC_DATABASE_PASSWORD=ionic
+    - 'JDBC_DATABASE_URL=jdbc:postgresql://ionic-chat-auth-postgres:5432/ionic-chat-client-authorization?currentSchema=chat'
+    - JDBC_DATABASE_USERNAME=ionic_user
+    - LETSENCRYPT_EMAIL=timothy.mila@gmail.com
+    - LETSENCRYPT_HOST=auth.ionic-chat.alimmit.com
+    - LOGGING_DIRECTORY=/var/log/ionic-chat-authorization
+    - VIRTUAL_HOST=auth.ionic-chat.alimmit.com
+    - VIRTUAL_PORT=8080
+  image: 'timmila/ionic-chat-client-authorization:latest'
+  links:
+    - ionic-chat-auth-postgres
+  tags:
+    - ionic-chat-auth
+  volumes:
+    - '/dev/urandom:/dev/random'
+    - '/var/lib/docker/volumes/logs/ionic-chat-authorization:/var/log/ionic-chat-authorization'
+ionic-chat-auth-letsencrypt:
+  image: 'jrcs/letsencrypt-nginx-proxy-companion:latest'
+  tags:
+    - ionic-chat-auth
+  volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock:ro'
+  volumes_from:
+    - ionic-chat-auth-nginx-proxy
+ionic-chat-auth-nginx-proxy:
+  image: 'jwilder/nginx-proxy:latest'
+  ports:
+    - '80:80'
+    - '443:443'
+  tags:
+    - ionic-chat-auth
+  volumes:
+    - /etc/nginx/vhost.d
+    - /usr/share/nginx/html
+    - '/var/run/docker.sock:/tmp/docker.sock:ro'
+    - /etc/nginx/certs
+ionic-chat-auth-postgres:
+  environment:
+    - POSTGRES_PASSWORD=ionic
+    - POSTGRES_USER=ionic_user
+  image: 'timmila/ionic-chat-client-authorization-postgres:latest'
+  tags:
+    - ionic-chat-auth
+  volumes:
+    - '/var/lib/docker/volumes/postgresql/_data2:/var/lib/postgresql/data'

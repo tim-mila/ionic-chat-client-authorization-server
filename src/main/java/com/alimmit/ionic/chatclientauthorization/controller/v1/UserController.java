@@ -5,10 +5,13 @@ import com.alimmit.ionic.chatclientauthorization.service.OAuthLoginService;
 import com.alimmit.ionic.chatclientauthorization.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.xml.ws.Response;
 
 @RestController
 public class UserController {
@@ -24,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping(Path.USER_SIGNUP)
-    public OAuth2AccessToken register(@RequestBody final User user) {
+    public ResponseEntity<OAuth2AccessToken> register(@RequestBody final User user) {
         final User u = userService.findOrCreate(user);
         return oAuthLoginService.login(u);
     }
