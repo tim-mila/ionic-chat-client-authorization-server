@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.ws.Response;
-
 @RestController
 public class UserController {
 
@@ -26,7 +24,7 @@ public class UserController {
         this.oAuthLoginService = oAuthLoginService;
     }
 
-    @PostMapping(Path.USER_SIGNUP)
+    @PostMapping(Path.USER_SIGN_UP)
     public ResponseEntity<OAuth2AccessToken> register(@RequestBody final User user) {
         final User u = userService.findOrCreate(user);
         return oAuthLoginService.login(u);

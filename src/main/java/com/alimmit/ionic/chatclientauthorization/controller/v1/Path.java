@@ -9,6 +9,5 @@ public final class Path {
     private static final String V1 = API + "/v1";
 
     private static final String USER = "/user";
-    public static final String USER_LOGIN = V1 + USER + "/login";
-    public static final String USER_SIGNUP = V1 + USER + "/signup";
+    public static final String USER_SIGN_UP = V1 + USER + "/signup";
 }

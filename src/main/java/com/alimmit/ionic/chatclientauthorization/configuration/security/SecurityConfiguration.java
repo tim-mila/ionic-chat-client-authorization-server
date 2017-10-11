@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import javax.sql.DataSource;
 
@@ -43,14 +41,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         LOG.info("******************************************************");
 
         http.authorizeRequests()
-                .antMatchers(Path.USER_SIGNUP, Path.USER_LOGIN, "/oauth/**").permitAll()
+                .antMatchers(Path.USER_SIGN_UP, "/oauth/**").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
     }
 
-//    private CsrfTokenRepository csrfTokenRepository() {
-//        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-//        repository.setHeaderName("X-XSRF-TOKEN");
-//        return repository;
-//    }
 }

@@ -11,14 +11,15 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.NoSuchClientException;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 @Configuration
 @EnableAuthorizationServer
@@ -46,21 +47,24 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
         LOG.info("AuthorizationServerConfiguration::configure");
-
-        clients.jdbc(dataSource)
-            .withClient("clientIdPassword")
-            .secret("secret")
-            .authorizedGrantTypes("password", "refresh_token")
-            .scopes("read");
+        clients.jdbc(dataSource);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+
+        final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(usernameTokenEnhancer(), accessTokenConverter()));
+
         endpoints
-                .pathMapping("/oauth/token", "/api/v1/user/login")
-                .accessTokenConverter(accessTokenConverter())
-                .authenticationManager(authenticationManager)
-                .tokenStore(tokenStore());
+                .tokenStore(tokenStore())
+                .tokenEnhancer(tokenEnhancerChain)
+                .authenticationManager(authenticationManager);
+    }
+
+    @Bean
+    public TokenEnhancer usernameTokenEnhancer() {
+        return new UsernameTokenEnhancer();
     }
 
     @Bean

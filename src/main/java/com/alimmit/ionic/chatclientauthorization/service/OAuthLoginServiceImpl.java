@@ -45,7 +45,7 @@ public class OAuthLoginServiceImpl implements OAuthLoginService {
         body.add("username", user.getUsername());
         body.add("password", user.getPassword());
 
-        final String url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" + httpServletRequest.getServerPort() + "/api/v1/user/login";
+        final String url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" + httpServletRequest.getServerPort() + "/oauth/token";
         LOG.debug(url);
 
         final HttpEntity entity = new HttpEntity<>(body, headers);
