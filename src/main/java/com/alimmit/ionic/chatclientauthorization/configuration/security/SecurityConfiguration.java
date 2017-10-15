@@ -41,7 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         LOG.info("******************************************************");
 
         http.authorizeRequests()
-                .antMatchers(Path.USER_SIGN_UP, "/oauth/**").permitAll()
+                .antMatchers(Path.API_V1_USER_SIGN_UP, "/oauth/**").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
     }

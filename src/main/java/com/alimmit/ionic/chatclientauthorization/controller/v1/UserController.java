@@ -1,13 +1,10 @@
 package com.alimmit.ionic.chatclientauthorization.controller.v1;
 
 import com.alimmit.ionic.chatclientauthorization.entity.User;
-import com.alimmit.ionic.chatclientauthorization.service.OAuthLoginService;
 import com.alimmit.ionic.chatclientauthorization.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(Path.USER_SIGN_UP)
+    @PostMapping(Path.API_V1_USER_SIGN_UP)
     @ResponseStatus(HttpStatus.CREATED)
     public User register(@RequestBody final User user) {
         return userService.findOrCreate(user);
